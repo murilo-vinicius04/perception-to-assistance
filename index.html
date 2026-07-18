@@ -8,7 +8,7 @@
   <meta property="og:title" content="From Perception to Assistance: Open-Vocabulary Shared Autonomy for Robotic Manipulation">
   <meta property="og:description" content="A shared-autonomy framework coupling a calibration-free camera teleoperation interface, open-vocabulary target grounding, GPU-accelerated collision-aware MPC, and potential-field assistance on Boston Dynamics Spot.">
   <meta property="og:image" content="static/images/first_new.png">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#129302;</text></svg>">
+  <link rel="icon" type="image/png" href="static/images/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -117,6 +117,7 @@
     .wide { max-width: 940px; margin: 0 auto; padding: 0 1.4rem; }
 
     section { padding: 2.2rem 0 3.4rem; }
+    section.compact { padding: 2.2rem 0 1.8rem; }
     h2 {
       font-size: 1.5rem; font-weight: 600; letter-spacing: -.015em;
       margin-bottom: 1.3rem;
@@ -456,10 +457,25 @@
         </div>
       </section>
 
+      <!-- Acknowledgments -->
+      <section class="compact" id="acknowledgments" style="padding-top:0;">
+        <div class="col">
+          <h2 class="reveal"><span class="idx">05. Acknowledgments</span></h2>
+          <p class="body-text reveal" style="font-size:.9rem; color:var(--ink-2);">
+            This work was supported by the S&atilde;o Paulo Research Foundation (FAPESP), Grants
+            #2025/22381-3, #2025/20858-7, and #2025/04308-7; and by Petr&oacute;leo Brasileiro S/A
+            (Petrobras), using resources from the ANP R&amp;D clause, in partnership with the
+            University of S&atilde;o Paulo (USP) and the Funda&ccedil;&atilde;o de Apoio &agrave;
+            F&iacute;sica e &agrave; Qu&iacute;mica (FAFQ), under Cooperation Agreements
+            #2023/00016-6 and #2023/00013-7.
+          </p>
+        </div>
+      </section>
+
       <!-- BibTeX -->
       <section id="bibtex" style="padding-top:0;">
         <div class="col">
-          <h2 class="reveal"><span class="idx">05. Citation</span>BibTeX</h2>
+          <h2 class="reveal"><span class="idx">06. Citation</span>BibTeX</h2>
           <div class="bibtex-card reveal">
             <button class="copy-btn" onclick="copyBib(this)">Copy</button>
 <pre id="bib">@article{dasilva2026perception,

@@ -135,6 +135,7 @@
       padding: 2.6rem 1.4rem;
       margin: 2.4rem 0;
     }
+    .band.white { background: var(--panel); }
     .band .inner { max-width: 940px; margin: 0 auto; }
     .band .inner.narrow { max-width: 760px; }
     .band img { display: block; width: 100%; height: auto; }
@@ -283,16 +284,18 @@
           <span class="affil">&nbsp;&middot;&nbsp; University of S&atilde;o Paulo</span>
         </div>
         <p class="lede">
-          A single RGB-D camera reads the operator's arm and hands. A text prompt names the target.
-          A collision-aware controller and a gentle potential field do the rest &mdash; on a real
-          quadruped manipulator, in real industrial clutter.
+          A vision-based interface maps wrist motion and hand gestures to end-effector references with no
+          wearables or calibration. A free-form text prompt is grounded by a vision-language model and tracked
+          across the robot's cameras as a 3D grasp frame. A cuRobo MPPI controller tracks every command against
+          a live nvblox ESDF, and an attractive potential field corrects the reference onto the target inside a
+          0.4&nbsp;m activation radius.
         </p>
         <div class="actions">
           <a class="btn solid" href="https://drive.google.com/file/d/1C962rltk_xPM-4pfOvlf88CGkEJcCKJg/view">
             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Video
           </a>
           <a class="btn" href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">Code &lt;/&gt;</a>
-          <a class="btn muted" href="#" title="Coming soon">Paper &mdash; soon</a>
+          <a class="btn muted" href="#" title="Coming soon">Paper (soon)</a>
         </div>
       </div>
       <div class="hero-media">
@@ -307,23 +310,29 @@
       <!-- Abstract -->
       <section id="abstract">
         <div class="col">
-          <h2 class="reveal"><span class="idx">01 &mdash; Abstract</span>Point, speak, reach &mdash; safely</h2>
+          <h2 class="reveal"><span class="idx">01. Abstract</span>Calibration-free teleoperation, language-grounded targets, collision-free execution</h2>
           <p class="body-text reveal">
             Teleoperating a robotic manipulator in industrial environments demands precision that camera-based
-            interfaces alone struggle to deliver: aligning the end-effector with a target in clutter, under limited
-            depth perception, without colliding with the surrounding structures. This work presents a shared-autonomy
-            framework that assists the operator throughout this process.
+            interfaces alone struggle to deliver. The operator must align the end-effector with a target in
+            clutter, under limited depth perception, and without colliding with the surrounding structures.
+            This paper presents a shared-autonomy framework that assists the operator throughout this process.
           </p>
           <p class="body-text reveal">
-            A single RGB-D camera captures the operator's arm motion and hand gestures with <b>no wearables,
-            fiducials, or calibration stage</b>. The intended target is specified by a <b>free-form text prompt</b>,
-            grounded by a vision-language model in the robot's gripper camera and tracked across its onboard cameras
-            by a promptable video-segmentation model, resulting in a grasp frame continuously separated from the
-            obstacle map. Every commanded motion is executed by a <b>GPU-accelerated model-predictive controller</b>
-            that enforces self- and environment-collision avoidance against an online volumetric reconstruction,
-            while a <b>potential field</b> corrects the operator's reference toward the grounded target during the
-            final approach. An <b>autonomous mode</b> can be gesture-triggered to complete the grasp on the same
-            target without a separate perception pipeline.
+            A single RGB-D camera captures the operator's arm motion and hand gestures without wearables,
+            fiducials, or a calibration stage. The intended target is specified by a free-form text prompt,
+            grounded by a vision-language model in the robot's gripper camera, and tracked across its onboard
+            cameras by a promptable video-segmentation model, resulting in a grasp frame continuously separated
+            from the obstacle map. Every commanded motion is executed by a GPU-accelerated model-predictive
+            controller that enforces self- and environment-collision avoidance against an online volumetric
+            reconstruction, while a potential field corrects the operator's reference toward the grounded target
+            during the final approach. An autonomous mode can be gesture-triggered to complete the grasp on the
+            same target without a separate perception pipeline. The framework is validated on a quadruped mobile
+            manipulator. The interface achieves a positional RMSE of 59&nbsp;mm relative to motion-capture
+            ground truth, and the controller keeps the arm at least 18&nbsp;cm from obstacles while the operator
+            deliberately commands the arm into them by 6&nbsp;cm. In an industrial valve manipulation and a
+            pick-and-place task, the full framework succeeded in all trials, while ablating either the collision
+            or the assistance module produced failures through complementary mechanisms, and autonomous
+            execution succeeded in four of five trials per task.
           </p>
           <div class="stats">
             <div class="stat reveal"><div class="stat-num">59&thinsp;mm</div><div class="stat-lbl">end-to-end tracking RMSE against motion-capture ground truth</div></div>
@@ -336,7 +345,7 @@
       <!-- Video -->
       <section id="video" style="padding-top:0;">
         <div class="col">
-          <h2 class="reveal"><span class="idx">02 &mdash; Demonstration</span>See it run</h2>
+          <h2 class="reveal"><span class="idx">02. Demonstration</span>See it run</h2>
         </div>
         <div class="band">
           <div class="inner narrow reveal">
@@ -351,14 +360,14 @@
       <!-- Method -->
       <section id="method" style="padding-top:0;">
         <div class="col">
-          <h2 class="reveal"><span class="idx">03 &mdash; Method</span>One perception, four layers of assistance</h2>
+          <h2 class="reveal"><span class="idx">03. Method</span>One perception, four layers of assistance</h2>
           <p class="body-text reveal">
             The framework composes four concurrent subsystems around a single perception of the scene:
             the operator interface, open-vocabulary grounding, volumetric mapping with collision-aware
             model-predictive control, and the assistance layer that bridges teleoperation and autonomy.
           </p>
         </div>
-        <div class="band">
+        <div class="band white">
           <div class="inner reveal">
             <img src="static/images/framework_overview_v7.png" alt="Framework overview diagram." class="rounded">
             <p class="figcap"><b>Framework overview.</b> Operator tracking (MediaPipe on a ZED&nbsp;2i) produces the end-effector reference; Qwen3-VL + SAM&nbsp;2 ground and track the target; nvblox builds the obstacle map; cuRobo's MPPI MPC executes every motion, teleoperated or autonomous, under the same collision constraints.</p>
@@ -383,12 +392,12 @@
           </div>
           <div class="step reveal">
             <h3>Assist the approach</h3>
-            <p>Inside a 0.4&nbsp;m radius, an attractive potential field bends the operator's reference onto the grasp frame while the operator retains authority. A two-finger gesture delegates the grasp to the autonomous mode &mdash; on the same target, through the same planner.</p>
+            <p>Inside a 0.4&nbsp;m radius, an attractive potential field bends the operator's reference onto the grasp frame while the operator retains authority. A two-finger gesture delegates the grasp to the autonomous mode , on the same target, through the same planner.</p>
             <span class="tag">potential field &middot; autonomy</span>
           </div>
         </div>
 
-        <div class="band">
+        <div class="band white">
           <div class="inner">
             <div class="duo">
               <figure class="reveal">
@@ -407,7 +416,7 @@
       <!-- Results -->
       <section id="results" style="padding-top:0;">
         <div class="col">
-          <h2 class="reveal"><span class="idx">04 &mdash; Results</span>Complementary layers, complementary failures removed</h2>
+          <h2 class="reveal"><span class="idx">04. Results</span>Collision avoidance and potential-field assistance suppress complementary failure modes</h2>
           <p class="body-text reveal">
             Validation proceeds in three stages: interface accuracy against motion capture, collision-aware
             shared control under deliberate operator error, and the full framework on two contact-rich
@@ -450,7 +459,7 @@
       <!-- BibTeX -->
       <section id="bibtex" style="padding-top:0;">
         <div class="col">
-          <h2 class="reveal"><span class="idx">05 &mdash; Citation</span>BibTeX</h2>
+          <h2 class="reveal"><span class="idx">05. Citation</span>BibTeX</h2>
           <div class="bibtex-card reveal">
             <button class="copy-btn" onclick="copyBib(this)">Copy</button>
 <pre id="bib">@article{dasilva2026perception,
@@ -466,7 +475,6 @@
 
       <footer>
         Code: <a href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">open-vocab-shared-autonomy</a>
-        &nbsp;&middot;&nbsp; Boston Dynamics Spot + 6-DoF Spot Arm
         &nbsp;&middot;&nbsp; <a href="https://github.com/murilo-vinicius04/perception-to-assistance">Page source</a>
       </footer>
     </main>

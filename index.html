@@ -9,249 +9,482 @@
   <meta property="og:description" content="A shared-autonomy framework coupling a calibration-free camera teleoperation interface, open-vocabulary target grounding, GPU-accelerated collision-aware MPC, and potential-field assistance on Boston Dynamics Spot.">
   <meta property="og:image" content="static/images/first_new.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#129302;</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --text: #1c1e21;
-      --muted: #5f6368;
-      --accent: #2456a5;
-      --bg: #ffffff;
-      --card: #f6f7f9;
-      --border: #e3e6ea;
+      --ink: #10131a;
+      --ink-soft: #4b5263;
+      --paper: #ffffff;
+      --paper-alt: #f4f6fa;
+      --line: #e5e8ef;
+      --brand: #4f7cff;
+      --brand-deep: #2b4fd8;
+      --amber: #ffb454;
+      --mint: #3ecf9a;
+      --hero-1: #0b1020;
+      --hero-2: #131c3a;
+      --radius: 18px;
+      --shadow: 0 18px 50px -18px rgba(16, 24, 48, .28);
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
-      font-family: "Google Sans", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text);
-      background: var(--bg);
-      line-height: 1.65;
-      font-size: 17px;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.7;
+      font-size: 16.5px;
+      -webkit-font-smoothing: antialiased;
     }
-    .container { max-width: 900px; margin: 0 auto; padding: 0 1.25rem; }
-    .hero { text-align: center; padding: 3.5rem 0 1.5rem; }
+    h1, h2, h3, .stat-num { font-family: "Space Grotesk", "Inter", sans-serif; }
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 1.4rem; }
+    .wrap.narrow { max-width: 860px; }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      position: relative;
+      color: #eef1fb;
+      background:
+        radial-gradient(1100px 520px at 15% -10%, rgba(79,124,255,.35), transparent 60%),
+        radial-gradient(900px 460px at 90% 0%, rgba(62,207,154,.16), transparent 55%),
+        radial-gradient(700px 420px at 60% 110%, rgba(255,180,84,.12), transparent 60%),
+        linear-gradient(180deg, var(--hero-1), var(--hero-2));
+      overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(900px 600px at 50% 0%, #000 30%, transparent 75%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; text-align: center; padding: 5rem 0 9.5rem; }
+    .badge {
+      display: inline-block;
+      font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: #bcd0ff;
+      border: 1px solid rgba(148, 178, 255, .4);
+      background: rgba(79, 124, 255, .14);
+      border-radius: 999px;
+      padding: .35rem 1rem;
+      margin-bottom: 1.6rem;
+      backdrop-filter: blur(4px);
+    }
     h1.title {
-      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-size: clamp(1.9rem, 4.6vw, 3.15rem);
       font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 1.2rem;
+      line-height: 1.16;
+      letter-spacing: -.015em;
+      max-width: 880px;
+      margin: 0 auto 1.4rem;
     }
-    h1.title .subtitle-part { color: var(--accent); }
-    .authors { font-size: 1.15rem; margin-bottom: 0.35rem; }
-    .authors a { color: var(--accent); text-decoration: none; }
-    .authors a:hover { text-decoration: underline; }
-    .affil { color: var(--muted); font-size: 1rem; margin-bottom: 0.35rem; }
-    .venue { color: var(--muted); font-style: italic; margin-bottom: 1.4rem; }
-    .links { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+    h1 .grad {
+      background: linear-gradient(92deg, #7ea2ff 0%, #5ee6b0 55%, #ffc76b 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .authors { font-size: 1.12rem; font-weight: 500; margin-bottom: .3rem; }
+    .authors a { color: #cdd9ff; text-decoration: none; border-bottom: 1px solid rgba(205,217,255,.35); }
+    .authors a:hover { color: #fff; border-color: #fff; }
+    .affil { color: #8f9ab8; font-size: .98rem; }
+    .venue { color: #8f9ab8; font-size: .92rem; font-style: italic; margin-top: .3rem; margin-bottom: 2rem; }
+    .links { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; }
     .btn {
-      display: inline-flex; align-items: center; gap: 0.45rem;
-      background: #222; color: #fff; border-radius: 999px;
-      padding: 0.5rem 1.15rem; font-size: 0.95rem; text-decoration: none;
-      transition: background 0.15s ease, transform 0.15s ease;
+      display: inline-flex; align-items: center; gap: .5rem;
+      border-radius: 999px;
+      padding: .62rem 1.35rem;
+      font-size: .95rem; font-weight: 600;
+      text-decoration: none;
+      color: #eef1fb;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.22);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+      backdrop-filter: blur(4px);
     }
-    .btn:hover { background: var(--accent); transform: translateY(-1px); }
-    .btn.disabled { background: #9aa0a6; cursor: default; pointer-events: none; }
-    .btn svg { width: 1em; height: 1em; fill: currentColor; }
-    section { padding: 1.6rem 0; }
-    h2 { font-size: 1.55rem; font-weight: 700; text-align: center; margin-bottom: 1.1rem; }
-    figure { margin: 0 auto 0.6rem; text-align: center; }
-    figure img { max-width: 100%; height: auto; border-radius: 8px; }
-    figcaption { font-size: 0.9rem; color: var(--muted); margin-top: 0.6rem; text-align: left; }
-    figcaption b { color: var(--text); }
-    p.body-text { text-align: justify; margin-bottom: 0.9rem; }
+    .btn:hover { transform: translateY(-2px); background: rgba(255,255,255,.16); }
+    .btn.primary {
+      background: linear-gradient(93deg, var(--brand), var(--brand-deep));
+      border-color: transparent;
+      box-shadow: 0 10px 26px -10px rgba(79,124,255,.75);
+    }
+    .btn.primary:hover { box-shadow: 0 14px 30px -10px rgba(79,124,255,.9); }
+    .btn.ghost { opacity: .55; pointer-events: none; }
+    .btn svg { width: 1.05em; height: 1.05em; fill: currentColor; flex: none; }
+
+    /* teaser card overlapping hero */
+    .teaser { position: relative; margin-top: -7.2rem; padding-bottom: .6rem; }
+    .teaser .card { padding: .9rem; }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card img { display: block; width: 100%; height: auto; border-radius: calc(var(--radius) - 8px); }
+    .caption {
+      font-size: .9rem; color: var(--ink-soft);
+      padding: .9rem .5rem .3rem;
+      line-height: 1.55;
+    }
+    .caption b { color: var(--ink); }
+
+    /* ---------- SECTIONS ---------- */
+    section { padding: 4.2rem 0; }
+    section.alt { background: var(--paper-alt); }
+    .kicker {
+      display: block; text-align: center;
+      font-size: .8rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--brand); margin-bottom: .5rem;
+    }
+    h2 {
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700; letter-spacing: -.01em;
+      text-align: center; margin-bottom: 1.6rem;
+    }
+    p.body-text { color: #2a2f3c; margin: 0 auto 1rem; }
+
+    /* stats */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2.2rem; }
+    .stat {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.2rem 1.3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .stat:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .stat::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--brand), var(--mint));
+    }
+    .stat:nth-child(2)::before { background: linear-gradient(90deg, var(--mint), var(--amber)); }
+    .stat:nth-child(3)::before { background: linear-gradient(90deg, var(--amber), var(--brand)); }
+    .stat-num { font-size: 2.1rem; font-weight: 700; color: var(--ink); line-height: 1.1; }
+    .stat-lbl { font-size: .88rem; color: var(--ink-soft); margin-top: .45rem; line-height: 1.45; }
+
+    /* steps */
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 2rem; }
+    .step {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.3rem 1.15rem 1.2rem;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .step:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .step .icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.25rem; margin-bottom: .8rem;
+      background: linear-gradient(135deg, rgba(79,124,255,.14), rgba(62,207,154,.14));
+    }
+    .step h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: .3rem; }
+    .step p { font-size: .875rem; color: var(--ink-soft); line-height: 1.55; }
+    .step .tag {
+      display: inline-block; margin-top: .6rem;
+      font-family: "JetBrains Mono", monospace; font-size: .72rem;
+      color: var(--brand-deep); background: rgba(79,124,255,.1);
+      border-radius: 6px; padding: .12rem .5rem;
+    }
+
+    /* video */
+    .video-section { background: linear-gradient(180deg, var(--hero-1), var(--hero-2)); color: #eef1fb; }
+    .video-section .kicker { color: #7ea2ff; }
+    .video-section h2 { color: #fff; }
     .video-wrap {
       position: relative; width: 100%; padding-top: 56.25%;
-      border-radius: 10px; overflow: hidden; background: #000;
+      border-radius: var(--radius); overflow: hidden;
+      background: #000;
+      box-shadow: 0 24px 70px -20px rgba(0,0,0,.7);
+      border: 1px solid rgba(255,255,255,.14);
     }
-    .video-wrap iframe {
-      position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+    .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-note { text-align: center; color: #8f9ab8; font-size: .9rem; margin-top: 1rem; }
+
+    /* grids */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; align-items: start; margin-top: 1.6rem; }
+
+    /* table */
+    .table-card {
+      background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.4rem 1.5rem 1.1rem; max-width: 680px; margin: 1.8rem auto 0;
+      overflow-x: auto;
     }
-    .highlight-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; margin: 1.2rem 0; }
-    .stat {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-      padding: 1rem 0.8rem; text-align: center;
+    table.results { border-collapse: collapse; width: 100%; font-size: .95rem; }
+    table.results th, table.results td { padding: .58rem .8rem; text-align: center; }
+    table.results th {
+      font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
+      border-bottom: 2px solid var(--ink);
     }
-    .stat .num { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
-    .stat .lbl { font-size: 0.85rem; color: var(--muted); line-height: 1.35; margin-top: 0.2rem; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; align-items: start; }
-    @media (max-width: 720px) {
-      .two-col { grid-template-columns: 1fr; }
-      .highlight-row { grid-template-columns: 1fr; }
-    }
-    table.results {
-      border-collapse: collapse; margin: 0 auto 0.5rem; font-size: 0.95rem; width: 100%; max-width: 620px;
-    }
-    table.results th, table.results td {
-      padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--border); text-align: center;
-    }
-    table.results th { border-bottom: 2px solid var(--text); }
+    table.results td { border-bottom: 1px solid var(--line); }
+    table.results tr:last-child td { border-bottom: 0; }
     table.results td:first-child, table.results th:first-child { text-align: left; }
-    table.results .best { font-weight: 700; color: var(--accent); }
-    .table-caption { font-size: 0.9rem; color: var(--muted); max-width: 620px; margin: 0 auto 0.5rem; }
-    pre.bibtex {
-      background: var(--card); border: 1px solid var(--border); border-radius: 10px;
-      padding: 1.1rem 1.3rem; overflow-x: auto; font-size: 0.85rem; line-height: 1.5;
-      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+    table.results tr.best td { font-weight: 700; color: var(--brand-deep); background: rgba(79,124,255,.07); }
+    table.results tr.best td:first-child { border-radius: 8px 0 0 8px; }
+    table.results tr.best td:last-child { border-radius: 0 8px 8px 0; }
+    .table-caption { font-size: .88rem; color: var(--ink-soft); margin-top: .9rem; line-height: 1.5; }
+
+    /* bibtex */
+    .bibtex-card {
+      position: relative;
+      background: #0d1220; color: #cfe0ff;
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      font-family: "JetBrains Mono", monospace; font-size: .84rem; line-height: 1.6;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
     }
-    hr.sep { border: 0; border-top: 1px solid var(--border); margin: 0.8rem auto; max-width: 900px; }
-    footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2rem 1rem 2.5rem; }
-    footer a { color: var(--accent); text-decoration: none; }
+    .bibtex-card .key { color: #5ee6b0; }
+    .bibtex-card .field { color: #7ea2ff; }
+    .copy-btn {
+      position: absolute; top: .8rem; right: .8rem;
+      font-family: "Inter", sans-serif; font-size: .78rem; font-weight: 600;
+      color: #cfe0ff; background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+      padding: .3rem .75rem; cursor: pointer;
+      transition: background .15s ease;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.2); }
+
+    footer {
+      background: var(--hero-1); color: #8f9ab8;
+      text-align: center; font-size: .88rem;
+      padding: 2.4rem 1.4rem;
+    }
+    footer a { color: #9db8ff; text-decoration: none; }
+    footer a:hover { color: #fff; }
+
+    /* reveal on scroll */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    @media (max-width: 860px) {
+      .steps { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stats, .steps, .grid-2 { grid-template-columns: 1fr; }
+      .hero-inner { padding: 3.4rem 0 8rem; }
+      section { padding: 3rem 0; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="hero container">
-    <h1 class="title">From Perception to Assistance:<br>
-      <span class="subtitle-part">Open-Vocabulary Shared Autonomy for Robotic Manipulation</span>
-    </h1>
+  <!-- ================= HERO ================= -->
+  <header class="hero">
+    <div class="wrap hero-inner">
+      <span class="badge">Shared Autonomy &middot; Mobile Manipulation</span>
+      <h1 class="title">From Perception to Assistance:<br>
+        <span class="grad">Open-Vocabulary Shared Autonomy</span><br>for Robotic Manipulation
+      </h1>
 
-    <!-- TODO: complete the author list and affiliations -->
-    <div class="authors">
-      <a href="https://github.com/murilo-vinicius04">Murilo&nbsp;Vinicius&nbsp;da&nbsp;Silva</a>
+      <!-- TODO: complete the author list and affiliations -->
+      <div class="authors">
+        <a href="https://github.com/murilo-vinicius04">Murilo&nbsp;Vinicius&nbsp;da&nbsp;Silva</a>
+      </div>
+      <div class="affil">University of S&atilde;o Paulo</div>
+      <div class="venue">Submitted to IEEE Robotics and Automation Letters (RA-L)</div>
+
+      <div class="links">
+        <a class="btn ghost" href="#" title="Coming soon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+          Paper (soon)
+        </a>
+        <a class="btn primary" href="https://drive.google.com/file/d/1C962rltk_xPM-4pfOvlf88CGkEJcCKJg/view">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          Watch the video
+        </a>
+        <a class="btn" href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">
+          <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18.92-.26 1.9-.38 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.42.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+          Code
+        </a>
+      </div>
     </div>
-    <div class="affil">University of S&atilde;o Paulo</div>
-    <div class="venue">Submitted to IEEE Robotics and Automation Letters (RA-L)</div>
+  </header>
 
-    <div class="links">
-      <a class="btn disabled" href="#" title="Coming soon">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
-        Paper (soon)
-      </a>
-      <a class="btn" href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">
-        <svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18.92-.26 1.9-.38 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.26 5.68.42.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
-        Code
-      </a>
-      <a class="btn" href="https://drive.google.com/file/d/1C962rltk_xPM-4pfOvlf88CGkEJcCKJg/view">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        Video
-      </a>
-    </div>
-  </div>
-
-  <div class="container">
-    <figure>
+  <!-- teaser overlapping the hero -->
+  <div class="wrap teaser">
+    <div class="card">
       <img src="static/images/first_new.png" alt="The shared-autonomy framework in operation during an industrial valve manipulation task.">
-      <figcaption><b>The framework in operation.</b> The operator commands Spot's arm through free motion and hand gestures, captured by a single RGB-D camera with no wearables, fiducials, or calibration. The target is grounded from a free-form text prompt, and the assisted end-effector is drawn toward it during the final approach while collision avoidance keeps the arm clear of the surrounding structure.</figcaption>
-    </figure>
+      <p class="caption"><b>The framework in operation.</b> The operator commands Spot's arm through free motion and hand gestures, captured by a single RGB-D camera with no wearables, fiducials, or calibration. The target is grounded from the free-form prompt <i>"wheel valve"</i>, and the assisted end-effector is drawn toward it during the final approach while collision avoidance keeps the arm clear of the structure.</p>
+    </div>
   </div>
 
-  <hr class="sep">
-
-  <section class="container" id="abstract">
-    <h2>Abstract</h2>
-    <p class="body-text">
-      Teleoperating a robotic manipulator in industrial environments demands precision that camera-based
-      interfaces alone struggle to deliver. The operator must align the end-effector with a target in clutter,
-      under limited depth perception, and without colliding with the surrounding structures. This paper presents
-      a shared-autonomy framework that assists the operator throughout this process. A single RGB-D camera
-      captures the operator's arm motion and hand gestures without wearables, fiducials, or a calibration stage.
-      The intended target is specified by a free-form text prompt, grounded by a vision-language model in the
-      robot's gripper camera, and tracked across its onboard cameras by a promptable video-segmentation model,
-      resulting in a grasp frame continuously separated from the obstacle map. Every commanded motion is executed
-      by a GPU-accelerated model-predictive controller that enforces self- and environment-collision avoidance
-      against an online volumetric reconstruction, while a potential field corrects the operator's reference
-      toward the grounded target during the final approach. An autonomous mode can be gesture-triggered to
-      complete the grasp on the same target without a separate perception pipeline. The framework is validated
-      on a quadruped mobile manipulator. The interface achieves a positional RMSE of 59&nbsp;mm relative to
-      motion-capture ground truth, and the controller keeps the arm at least 18&nbsp;cm from obstacles while the
-      operator deliberately commands the arm into them by 6&nbsp;cm. In an industrial valve manipulation and a
-      pick-and-place task, the full framework succeeded in all trials, while ablating either the collision or the
-      assistance module produced failures through complementary mechanisms, and autonomous execution succeeded
-      in four of five trials per task.
-    </p>
-    <div class="highlight-row">
-      <div class="stat"><div class="num">59&nbsp;mm</div><div class="lbl">end-to-end tracking RMSE vs. motion-capture ground truth</div></div>
-      <div class="stat"><div class="num">&geq;&nbsp;18&nbsp;cm</div><div class="lbl">obstacle clearance while the operator commands 6&nbsp;cm into the obstacle</div></div>
-      <div class="stat"><div class="num">10/10</div><div class="lbl">full-framework success across both contact-rich tasks</div></div>
+  <!-- ================= ABSTRACT ================= -->
+  <section id="abstract">
+    <div class="wrap narrow">
+      <span class="kicker reveal">TL;DR</span>
+      <h2 class="reveal">Point, speak, reach &mdash; safely</h2>
+      <p class="body-text reveal">
+        Teleoperating a manipulator through a camera interface is hard exactly where it matters most: the final,
+        cluttered centimeters. We present a shared-autonomy framework in which a single RGB-D camera captures the
+        operator's arm and hand gestures with <b>no wearables, fiducials, or calibration</b>; the target is named by a
+        <b>free-form text prompt</b>, grounded by a vision-language model and tracked across the robot's onboard
+        cameras; and every commanded motion runs through a <b>GPU-accelerated collision-aware MPC</b> against an online
+        volumetric map, while a <b>potential field</b> pulls the operator's reference onto the grounded target during
+        the final approach. A gesture-triggered <b>autonomous mode</b> completes the grasp on the same target with no
+        separate pipeline.
+      </p>
+      <p class="body-text reveal" style="font-size:.95rem; color:var(--ink-soft);">
+        Validated on a Boston Dynamics Spot with the 6-DoF Spot Arm on real industrial tasks: wheel-valve operation
+        and a drill pick-and-place, plus a deliberate collision stress test and motion-capture accuracy evaluation.
+      </p>
+      <div class="stats">
+        <div class="stat reveal"><div class="stat-num">59&thinsp;mm</div><div class="stat-lbl">end-to-end tracking RMSE vs. motion-capture ground truth</div></div>
+        <div class="stat reveal"><div class="stat-num">&geq;&thinsp;18&thinsp;cm</div><div class="stat-lbl">obstacle clearance while the operator commands 6&thinsp;cm <i>into</i> the obstacle</div></div>
+        <div class="stat reveal"><div class="stat-num">10/10</div><div class="stat-lbl">full-framework success across both contact-rich tasks</div></div>
+      </div>
     </div>
   </section>
 
-  <hr class="sep">
-
-  <section class="container" id="video">
-    <h2>Video</h2>
-    <div class="video-wrap">
-      <iframe src="https://drive.google.com/file/d/1C962rltk_xPM-4pfOvlf88CGkEJcCKJg/preview" allow="autoplay; fullscreen" allowfullscreen title="Demonstration video"></iframe>
-    </div>
-    <figcaption>Full demonstration: industrial valve manipulation, pick-and-place, the collision-avoidance stress test, and gesture-triggered autonomous execution.</figcaption>
-  </section>
-
-  <hr class="sep">
-
-  <section class="container" id="method">
-    <h2>Framework</h2>
-    <figure>
-      <img src="static/images/framework_overview_v7.png" alt="Framework overview diagram.">
-    </figure>
-    <p class="body-text">
-      A ZED&nbsp;2i RGB-D camera tracks the operator with MediaPipe: wrist motion maps to an end-effector
-      position reference through an online-estimated workspace scale, the palm normal sets the gripper roll,
-      and hand gestures command the gripper and mode switches. The target is specified with a free-form text
-      prompt (&ldquo;wheel valve&rdquo;, &ldquo;drill&rdquo;), grounded by Qwen3-VL in the gripper camera, and
-      tracked across the robot's onboard cameras with SAM&nbsp;2 streaming predictors, yielding a world-latched
-      grasp frame that is continuously kept out of the static obstacle map. nvblox fuses the onboard stereo
-      depth into a TSDF/ESDF, and cuRobo runs MPPI-based model-predictive control at 50&nbsp;Hz against that map
-      for self- and environment-collision avoidance. During the final approach, an attractive potential field
-      corrects the operator's reference toward the grasp frame while the operator retains authority, and the
-      same grasp frame drives the gesture-triggered autonomous mode.
-    </p>
-    <div class="two-col">
-      <figure>
-        <img src="static/images/grounding_figure.png" alt="Open-vocabulary grounding of the text prompt in the gripper camera.">
-        <figcaption><b>Open-vocabulary grounding.</b> The free-form prompt is grounded by the VLM in the gripper camera and propagated to the onboard cameras by SAM&nbsp;2, producing a grasp frame that is excluded from the obstacle map.</figcaption>
-      </figure>
-      <figure>
-        <img src="static/images/sim_teleop_demo.gif" alt="Simulation teleoperation demo in Isaac Sim.">
-        <figcaption><b>Simulation stack.</b> The same pipeline drives Spot in Isaac Sim, with the arm under cuRobo MPC and the legs under a learned locomotion policy.</figcaption>
-      </figure>
+  <!-- ================= VIDEO ================= -->
+  <section class="video-section" id="video">
+    <div class="wrap narrow">
+      <span class="kicker reveal">Demonstration</span>
+      <h2 class="reveal">See it run</h2>
+      <div class="video-wrap reveal">
+        <iframe src="https://drive.google.com/file/d/1C962rltk_xPM-4pfOvlf88CGkEJcCKJg/preview" allow="autoplay; fullscreen" allowfullscreen title="Demonstration video"></iframe>
+      </div>
+      <p class="video-note reveal">Industrial valve manipulation &middot; pick-and-place &middot; collision-avoidance stress test &middot; autonomous execution</p>
     </div>
   </section>
 
-  <hr class="sep">
+  <!-- ================= METHOD ================= -->
+  <section class="alt" id="method">
+    <div class="wrap">
+      <span class="kicker reveal">Method</span>
+      <h2 class="reveal">One perception, four layers of assistance</h2>
+      <div class="card reveal" style="padding:.9rem;">
+        <img src="static/images/framework_overview_v7.png" alt="Framework overview diagram.">
+      </div>
 
-  <section class="container" id="results">
-    <h2>Results</h2>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="icon">&#128400;</div>
+          <h3>Track the operator</h3>
+          <p>A ZED&nbsp;2i + MediaPipe decode wrist motion into an end-effector reference with an online-estimated workspace scale; the palm normal sets gripper roll, gestures switch modes.</p>
+          <span class="tag">MediaPipe &middot; RGB-D</span>
+        </div>
+        <div class="step reveal">
+          <div class="icon">&#128172;</div>
+          <h3>Ground the prompt</h3>
+          <p>A free-form prompt ("wheel valve") is grounded by Qwen3-VL in the gripper camera and tracked across three onboard cameras by SAM&nbsp;2, yielding a world-latched grasp frame kept <i>out</i> of the obstacle map.</p>
+          <span class="tag">Qwen3-VL &middot; SAM&nbsp;2</span>
+        </div>
+        <div class="step reveal">
+          <div class="icon">&#128737;&#65039;</div>
+          <h3>Plan collision-free</h3>
+          <p>nvblox fuses onboard stereo depth into a TSDF/ESDF; cuRobo's MPPI MPC tracks the reference at 50&nbsp;Hz under self- and environment-collision constraints.</p>
+          <span class="tag">nvblox &middot; cuRobo &middot; 50&nbsp;Hz</span>
+        </div>
+        <div class="step reveal">
+          <div class="icon">&#129522;</div>
+          <h3>Assist the approach</h3>
+          <p>Inside a 0.4&nbsp;m radius, an attractive potential field bends the operator's reference onto the grasp frame while the operator keeps authority; a two-finger gesture hands the grasp to the autonomous mode.</p>
+          <span class="tag">potential field &middot; autonomy</span>
+        </div>
+      </div>
 
-    <figure>
-      <img src="static/images/avoidance_new.jpg" alt="Collision-aware shared control experiment.">
-      <figcaption><b>Collision-aware shared control.</b> Left: reconstructed workspace with the commanded (orange), executed wrist (red), and executed hand (green) trajectories. Right: signed distance of each to the nearest obstacle over time. The operator deliberately drives the command 6&nbsp;cm into the obstacle; the executed wrist and hand never come closer than 19&nbsp;cm and 18&nbsp;cm.</figcaption>
-    </figure>
-
-    <figure>
-      <img src="static/images/traject.jpg" alt="Assisted approach trajectories relative to the grasp frame." style="max-width: 620px;">
-      <figcaption><b>Potential-field assistance.</b> Commanded reference, assisted end-effector trajectory, and gripper tip relative to the grounded grasp frame during the valve task. Once the command enters the 0.4&nbsp;m activation radius, the assisted trajectory is drawn toward the target and the gripper converges onto the affordance point; the trailing loops are the operator's quarter-turn rotation under the same assistance.</figcaption>
-    </figure>
-
-    <p class="table-caption"><b>Ablation study.</b> Task success across conditions, five trials each. C denotes collision avoidance, PF the potential-field assistance. The two modules suppress complementary failure modes: without C the operator contacts the structure, without PF the fine grasp alignment fails.</p>
-    <table class="results">
-      <thead>
-        <tr><th>Condition</th><th>Valve</th><th>Pick and place</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Teleoperation (no C, no PF)</td><td>0/5</td><td>1/5</td></tr>
-        <tr><td>Teleoperation + C</td><td>2/5</td><td>2/5</td></tr>
-        <tr><td>Teleoperation + PF</td><td>3/5</td><td>4/5</td></tr>
-        <tr><td>Full framework (C + PF)</td><td class="best">5/5</td><td class="best">5/5</td></tr>
-        <tr><td>Autonomous execution</td><td>4/5</td><td>4/5</td></tr>
-      </tbody>
-    </table>
+      <div class="grid-2">
+        <div class="card reveal" style="padding:.9rem;">
+          <img src="static/images/grounding_figure.png" alt="Open-vocabulary grounding of the text prompt in the gripper camera.">
+          <p class="caption"><b>Open-vocabulary grounding.</b> The prompt is grounded in the gripper camera and propagated to the onboard cameras, producing a grasp frame that is continuously separated from the static obstacle map.</p>
+        </div>
+        <div class="card reveal" style="padding:.9rem;">
+          <img src="static/images/sim_teleop_demo.gif" alt="Simulation teleoperation demo in Isaac Sim.">
+          <p class="caption"><b>Simulation stack.</b> The same pipeline drives Spot in Isaac Sim, with the arm under cuRobo MPC and the legs under a learned locomotion policy.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <hr class="sep">
+  <!-- ================= RESULTS ================= -->
+  <section id="results">
+    <div class="wrap">
+      <span class="kicker reveal">Results</span>
+      <h2 class="reveal">Complementary layers, complementary failures removed</h2>
 
-  <section class="container" id="bibtex">
-    <h2>BibTeX</h2>
-    <pre class="bibtex">@article{dasilva2026perception,
-  title   = {From Perception to Assistance: Open-Vocabulary Shared Autonomy for Robotic Manipulation},
-  author  = {da Silva, Murilo Vinicius},
-  journal = {Submitted to IEEE Robotics and Automation Letters},
-  year    = {2026}
+      <div class="card reveal" style="padding:.9rem;">
+        <img src="static/images/avoidance_new.jpg" alt="Collision-aware shared control experiment.">
+        <p class="caption"><b>Collision-aware shared control.</b> Left: reconstructed workspace with the commanded (orange), executed wrist (red), and executed hand (green) trajectories. Right: signed distance of each to the nearest obstacle. The operator deliberately drives the command 6&nbsp;cm into the obstacle; the executed wrist and hand never come closer than 19&nbsp;cm and 18&nbsp;cm.</p>
+      </div>
+
+      <div class="grid-2" style="align-items:center;">
+        <div class="card reveal" style="padding:.9rem;">
+          <img src="static/images/traject.jpg" alt="Assisted approach trajectories relative to the grasp frame.">
+          <p class="caption"><b>Potential-field assistance.</b> Commanded reference, assisted trajectory, and gripper tip relative to the grasp frame during the valve task. Inside the 0.4&nbsp;m activation radius the assisted trajectory is drawn onto the affordance point; the trailing loops are the operator's quarter-turn under the same assistance.</p>
+        </div>
+        <div>
+          <div class="table-card reveal" style="margin-top:0;">
+            <table class="results">
+              <thead>
+                <tr><th>Condition</th><th>Valve</th><th>Pick&nbsp;&amp;&nbsp;place</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Teleoperation only</td><td>0/5</td><td>1/5</td></tr>
+                <tr><td>+ Collision avoidance (C)</td><td>2/5</td><td>2/5</td></tr>
+                <tr><td>+ Potential field (PF)</td><td>3/5</td><td>4/5</td></tr>
+                <tr class="best"><td>Full framework (C + PF)</td><td>5/5</td><td>5/5</td></tr>
+                <tr><td>Autonomous execution</td><td>4/5</td><td>4/5</td></tr>
+              </tbody>
+            </table>
+            <p class="table-caption">Five trials per condition; contact with the structure ends a trial as failure. Collision avoidance alone still misses grasps; assistance alone still contacts the structure. Together, <b>every trial succeeds</b>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BIBTEX ================= -->
+  <section class="alt" id="bibtex">
+    <div class="wrap narrow">
+      <span class="kicker reveal">Citation</span>
+      <h2 class="reveal">BibTeX</h2>
+      <div class="bibtex-card reveal">
+        <button class="copy-btn" onclick="copyBib(this)">Copy</button>
+<pre id="bib">@article{dasilva2026perception,
+  <span class="field">title</span>   = {From Perception to Assistance: Open-Vocabulary Shared Autonomy for Robotic Manipulation},
+  <span class="field">author</span>  = {da Silva, Murilo Vinicius},
+  <span class="field">journal</span> = {Submitted to IEEE Robotics and Automation Letters},
+  <span class="field">year</span>    = {2026}
 }</pre>
+      </div>
+    </div>
   </section>
 
   <footer>
-    Code: <a href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">open-vocab-shared-autonomy</a> ·
-    Page template inspired by <a href="https://nerfies.github.io/">Nerfies</a>.
+    Code: <a href="https://github.com/murilo-vinicius04/open-vocab-shared-autonomy">open-vocab-shared-autonomy</a>
+    &nbsp;&middot;&nbsp; Boston Dynamics Spot + 6-DoF Spot Arm
+    &nbsp;&middot;&nbsp; <a href="https://github.com/murilo-vinicius04/perception-to-assistance">Page source</a>
   </footer>
 
+  <script>
+    // scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    function copyBib(btn) {
+      navigator.clipboard.writeText(document.getElementById('bib').innerText).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1600);
+      });
+    }
+  </script>
 </body>
 </html>
